@@ -26,7 +26,7 @@ const Login = (props) => {
 
     //https://clerk.com/blog/building-a-react-login-page-template
     // You'll update this function later...
-    fetch('http://ec2-35-172-129-171.compute-1.amazonaws.com:4000/api/user/login', {
+    fetch('http://ec2-35-172-129-171.compute-1.amazonaws.com/lab9/api/user/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
