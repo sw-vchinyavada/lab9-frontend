@@ -27,7 +27,7 @@ function AppContent() {
   const filterStatus = useSelector((state) => state.todo.filterStatus);
 
   const sortedTodoList = [...todoList];
-  sortedTodoList.sort((a, b) => new Date(b.time) - new Date(a.time));
+  sortedTodoList.sort((a, b) => a.priority - b.priority);
 
   const filteredTodoList = sortedTodoList.filter((item) => {
     if (filterStatus === 'all') {

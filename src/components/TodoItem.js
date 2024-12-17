@@ -39,7 +39,7 @@ function TodoItem({ todo }) {
   };
 
   const handleDelete = () => {
-    dispatch(deleteTodo(todo.id));
+    dispatch(deleteTodo(todo._id));
     toast.success('Todo Deleted Successfully');
   };
 
@@ -62,7 +62,11 @@ function TodoItem({ todo }) {
               {todo.title}
             </p>
             <p className={styles.time}>
-              {format(new Date(todo.time), 'p, MM/dd/yyyy')}
+              <b>Priority: </b>{todo.priority}
+            </p>
+            <p className={styles.time}>
+              <b>Created:</b>{todo.time}&nbsp;&nbsp;&nbsp;&nbsp;
+              <b>Due Date:</b>{todo.dueDate}
             </p>
           </div>
         </div>

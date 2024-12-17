@@ -33,15 +33,21 @@ const dropIn = {
 function TodoModal({ type, modalOpen, setModalOpen, todo }) {
   const dispatch = useDispatch();
   const [title, setTitle] = useState('');
+  const [priority, setPriority] = useState('');
+  const [dueDate, setDueDate] = useState(null);
   const [status, setStatus] = useState('incomplete');
 
   useEffect(() => {
     if (type === 'update' && todo) {
       setTitle(todo.title);
       setStatus(todo.status);
+      setPriority(todo.priority);
+      setDueDate(todo.dueDate);
     } else {
       setTitle('');
       setStatus('incomplete');
+      setPriority(1);
+      setDueDate(null);
     }
   }, [type, todo, modalOpen]);
 
@@ -51,6 +57,14 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
       toast.error('Please enter a title');
       return;
     }
+    if (priority === '') {
+      toast.error('Please enter a priority');
+      return;
+    }
+    if (dueDate === null) {
+      toast.error('Please enter a Due Date');
+      return;
+    }
     if (title && status) {
       if (type === 'add') {
         dispatch(
@@ -58,14 +72,16 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
             id: uuid(),
             title,
             status,
+            priority,
+            dueDate,
             time: format(new Date(), 'p, MM/dd/yyyy'),
           })
         );
         toast.success('Task added successfully');
       }
       if (type === 'update') {
-        if (todo.title !== title || todo.status !== status) {
-          dispatch(updateTodo({ ...todo, title, status }));
+        if (todo.title !== title || todo.status !== status || todo.priority !== priority || todo.dueDate!==dueDate) {
+          dispatch(updateTodo({ ...todo, title, status, priority, dueDate }));
           toast.success('Task Updated successfully');
         } else {
           toast.error('No changes made');
@@ -117,6 +133,25 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
                   id="title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                />
+              </label>
+              <label htmlFor="priority">
+                Priority
+                <input
+                  type="number"
+                  min={1}
+                  id="priority"
+                  value={priority}
+                  onChange={(e) => setPriority(e.target.value)}
+                />
+              </label>
+              <label htmlFor="dueDate">
+                Due Date
+                <input
+                  type="date"
+                  id="dueDate"
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
                 />
               </label>
               <label htmlFor="type">
