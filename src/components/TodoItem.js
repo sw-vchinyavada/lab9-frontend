@@ -30,7 +30,7 @@ function TodoItem({ todo }) {
 
   const handleCheck = () => {
     setChecked(!checked);
-      fetch(`http://ec2-35-172-129-171.compute-1.amazonaws.com/lab9/api/task/${todo._id}`, {
+      fetch(`http://ec2-35-172-129-171.compute-1.amazonaws.com/backend/api/task/${todo._id}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ function TodoItem({ todo }) {
   };
 
   const handleDelete = () => {
-    fetch(`http://ec2-35-172-129-171.compute-1.amazonaws.com/lab9/api/task/${todo._id}`, {
+    fetch(`http://ec2-35-172-129-171.compute-1.amazonaws.com/backend/api/task/${todo._id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

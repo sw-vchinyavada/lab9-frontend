@@ -65,7 +65,7 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
     }
     if (title && status) {
       if (type === 'add') {
-          fetch(`http://ec2-35-172-129-171.compute-1.amazonaws.com/lab9/api/task`, {
+          fetch(`http://ec2-35-172-129-171.compute-1.amazonaws.com/backend/api/task`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
             });
       }
       if (type === 'update') {
-        fetch(`http://ec2-35-172-129-171.compute-1.amazonaws.com/lab9/api/task/${_id}`, {
+        fetch(`http://ec2-35-172-129-171.compute-1.amazonaws.com/backend/api/task/${_id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
