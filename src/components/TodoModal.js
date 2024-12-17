@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { v4 as uuid } from 'uuid';
 import { MdOutlineClose } from 'react-icons/md';
-import { useDispatch } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { format } from 'date-fns';
-import { addTodo, updateTodo } from '../slices/todoSlice';
 import styles from '../styles/modules/modal.module.scss';
 import Button from './Button';
 
@@ -31,7 +27,7 @@ const dropIn = {
 };
 
 function TodoModal({ type, modalOpen, setModalOpen, todo }) {
-  const dispatch = useDispatch();
+  const [_id, setId] = useState('');
   const [title, setTitle] = useState('');
   const [priority, setPriority] = useState('');
   const [dueDate, setDueDate] = useState(null);
@@ -39,11 +35,13 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
 
   useEffect(() => {
     if (type === 'update' && todo) {
+      setId(todo._id);
       setTitle(todo.title);
       setStatus(todo.status);
       setPriority(todo.priority);
       setDueDate(todo.dueDate);
     } else {
+      setId('');
       setTitle('');
       setStatus('incomplete');
       setPriority(1);
@@ -67,28 +65,55 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
     }
     if (title && status) {
       if (type === 'add') {
-        dispatch(
-          addTodo({
-            id: uuid(),
+          fetch(`http://localhost:4000/api/task`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
+            },
+            body: JSON.stringify({
+              title,
+              status,
+              priority,
+              dueDate
+            }),
+          })
+            .then((r) => r.json())
+            .then((r) => {
+              if (r.success) {
+                toast.success('Task added successfully');
+                setModalOpen(false);
+                window.location.reload();
+              } else {
+                toast.error(r.error)
+              }
+            });
+      }
+      if (type === 'update') {
+        fetch(`http://localhost:4000/api/task/${_id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
+          },
+          body: JSON.stringify({
             title,
             status,
             priority,
-            dueDate,
-            time: format(new Date(), 'p, MM/dd/yyyy'),
-          })
-        );
-        toast.success('Task added successfully');
+            dueDate
+          }),
+        })
+          .then((r) => r.json())
+          .then((r) => {
+            if (r.success) {
+              toast.success('Task updated successfully');
+              setModalOpen(false);
+              window.location.reload();
+            } else {
+              toast.error(r.error)
+            }
+          });
       }
-      if (type === 'update') {
-        if (todo.title !== title || todo.status !== status || todo.priority !== priority || todo.dueDate!==dueDate) {
-          dispatch(updateTodo({ ...todo, title, status, priority, dueDate }));
-          toast.success('Task Updated successfully');
-        } else {
-          toast.error('No changes made');
-          return;
-        }
-      }
-      setModalOpen(false);
     }
   };
 

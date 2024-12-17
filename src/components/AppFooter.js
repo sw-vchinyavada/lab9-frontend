@@ -9,7 +9,7 @@ function AppFooter() {
 
   return (
     <div className={styles.appHeader}>
-      <Button variant="danger" onClick={() =>{
+      <Button variant="secondary" onClick={() =>{
             navigate("/");
       } }>
         Logout

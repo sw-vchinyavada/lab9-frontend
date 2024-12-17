@@ -3,8 +3,6 @@ import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import React, { useEffect, useState } from 'react';
 import { MdDelete, MdEdit } from 'react-icons/md';
-import { useDispatch } from 'react-redux';
-import { deleteTodo, updateTodo } from '../slices/todoSlice';
 import styles from '../styles/modules/todoItem.module.scss';
 import { getClasses } from '../utils/getClasses';
 import CheckButton from './CheckButton';
@@ -19,7 +17,6 @@ const child = {
 };
 
 function TodoItem({ todo }) {
-  const dispatch = useDispatch();
   const [checked, setChecked] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
 
@@ -33,14 +30,46 @@ function TodoItem({ todo }) {
 
   const handleCheck = () => {
     setChecked(!checked);
-    dispatch(
-      updateTodo({ ...todo, status: checked ? 'incomplete' : 'complete' })
-    );
+      fetch(`http://localhost:4000/api/task/${todo._id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
+            },
+            body: JSON.stringify({
+              ...todo,
+              status: checked ? 'incomplete' : 'complete'
+            }),
+          })
+            .then((r) => r.json())
+            .then((r) => {
+              if (r.success) {
+                toast.success('Task updated successfully');
+                window.location.reload();
+              } else {
+                toast.error(r.error)
+              }
+            });
   };
 
   const handleDelete = () => {
-    dispatch(deleteTodo(todo._id));
-    toast.success('Todo Deleted Successfully');
+    fetch(`http://localhost:4000/api/task/${todo._id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
+        }
+      })
+        .then((r) => r.json())
+        .then((r) => {
+          if (r.success) {
+            toast.success('Todo Deleted Successfully');
+            window.location.reload();
+          } else {
+            toast.error(r.error)
+          }
+        });
+
   };
 
   const handleUpdate = () => {
@@ -52,22 +81,11 @@ function TodoItem({ todo }) {
       <motion.div className={styles.item} variants={child}>
         <div className={styles.todoDetails}>
           <CheckButton checked={checked} handleCheck={handleCheck} />
-          <div className={styles.texts}>
-            <p
-              className={getClasses([
-                styles.todoText,
-                todo.status === 'complete' && styles['todoText--completed'],
-              ])}
-            >
-              {todo.title}
-            </p>
-            <p className={styles.time}>
-              <b>Priority: </b>{todo.priority}
-            </p>
-            <p className={styles.time}>
-              <b>Created:</b>{todo.time}&nbsp;&nbsp;&nbsp;&nbsp;
-              <b>Due Date:</b>{todo.dueDate}
-            </p>
+          <div className={styles.text}>
+              <p className={getClasses([styles.todoText, todo.status === 'complete' && styles['todoText--completed'],])}>{todo.title}</p>
+              <p className={styles.time}><b>Priority: </b>{todo.priority}</p><br/>
+              <p className={styles.time}><b>Created:</b>&nbsp;{todo.createdAt}</p><br/>
+              <p className={styles.time}><b>Due Date:&nbsp;</b>{todo.dueDate}</p><br/>
           </div>
         </div>
         <div className={styles.todoActions}>

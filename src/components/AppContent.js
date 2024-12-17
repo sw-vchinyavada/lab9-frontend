@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styles from '../styles/modules/app.module.scss';
 import TodoItem from './TodoItem';
@@ -23,7 +23,25 @@ const child = {
 };
 
 function AppContent() {
-  const todoList = useSelector((state) => state.todo.todoList);
+  const [todoList, setTodoList] = useState([]);
+  useEffect(() => {
+    fetch('http://localhost:4000/api/tasks', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorisation': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
+      }
+    })
+      .then((r) => r.json())
+      .then((r) => {
+        if (r.success) {
+          setTodoList(r.result.tasks);
+        } else {
+          window.alert(r.error)
+        }
+      });
+  }, []);
+
   const filterStatus = useSelector((state) => state.todo.filterStatus);
 
   const sortedTodoList = [...todoList];
@@ -46,8 +64,8 @@ function AppContent() {
       <AnimatePresence>
         {filteredTodoList && filteredTodoList.length > 0 ? (
           filteredTodoList.map((todo) => (
-            // <motion.div key={todo.id} variants={child}>
-            <TodoItem key={todo.id} todo={todo} />
+            // <motion.div key={todo._id} variants={child}>
+            <TodoItem key={todo._id} todo={todo} />
             // </motion.div>
           ))
         ) : (
