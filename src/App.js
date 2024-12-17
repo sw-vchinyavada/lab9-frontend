@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import TasksPage from './pages/tasks-page'
 import LoginPage from './pages/login-page'
 import './App.css'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false)

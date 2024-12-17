@@ -50,13 +50,13 @@ const Login = (props) => {
     <div className={'mainContainer'}>
       <img src={logo} class='centerImage' alt="logo" />
       <div className={'titleContainer'}>
-        <div>Login</div>
+        <div>ISE7106 LAB9</div>
       </div>
       <br />
       <div className={'inputContainer'}>
         <input
           value={username}
-          placeholder="Enter your username here"
+          placeholder="Username - admin"
           onChange={(ev) => setUsername(ev.target.value)}
           className={'inputBox'}
         />
@@ -66,7 +66,7 @@ const Login = (props) => {
       <div className={'inputContainer'}>
         <input
           value={password}
-          placeholder="Enter your password here"
+          placeholder="Password - admin"
           onChange={(ev) => setPassword(ev.target.value)}
           className={'inputBox'}
         />

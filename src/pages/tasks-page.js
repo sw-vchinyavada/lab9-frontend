@@ -9,10 +9,10 @@ import logo from '../logo.png';
 import { useNavigate } from 'react-router-dom';
 
 function TasksPage(props) {
-  const { loggedIn, username } = props;
+  const { loggedIn, token } = props;
   const navigate = useNavigate();
 
-  console.log(username);
+  console.log(token);
   if(!loggedIn){
     navigate("/login");
   }
